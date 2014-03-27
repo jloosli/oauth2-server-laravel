@@ -1,0 +1,21 @@
+{
+    "name": "dingo/oauth2-laravel",
+    "description": "A wrapper for the Dingo OAuth 2.0 server.",
+    "authors": [
+        {
+            "name": "Jason Lewis",
+            "email": "jason.lewis1991@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.1.*",
+        "dingo/oauth2-server": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Dingo\\OAuth2": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
