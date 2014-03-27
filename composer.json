@@ -1,5 +1,5 @@
 {
-    "name": "dingo/oauth2-laravel",
+    "name": "dingo/oauth2-server-laravel",
     "description": "A wrapper for the Dingo OAuth 2.0 server.",
     "authors": [
         {
