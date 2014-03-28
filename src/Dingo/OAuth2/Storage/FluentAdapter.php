@@ -67,7 +67,7 @@ class FluentAdapter extends Adapter {
 	 * 
 	 * @return \Dingo\OAuth2\Storage\Fluent\AuthorizationCode
 	 */
-	public function createAuthorizationCodeStorage()
+	public function createAuthorizationStorage()
 	{
 
 	}
