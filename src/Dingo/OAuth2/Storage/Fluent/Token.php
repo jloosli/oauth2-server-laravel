@@ -87,4 +87,17 @@ class Token extends Fluent implements TokenInterface {
 		return $token;
 	}
 
+	/**
+	 * Delete an access token from storage.
+	 * 
+	 * @param  string  $token
+	 * @return void
+	 */
+	public function delete($token)
+	{
+		$this->connection->table($this->tables['tokens'])->where('token', $token)->delete();
+
+		$this->connection->table($this->tables['token_scopes'])->where('token', $token)->delete();
+	}
+
 }
