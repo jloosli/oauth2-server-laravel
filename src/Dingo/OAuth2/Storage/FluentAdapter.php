@@ -4,6 +4,7 @@ use Illuminate\Database\Connection;
 use Dingo\OAuth2\Storage\Fluent\Scope;
 use Dingo\OAuth2\Storage\Fluent\Token;
 use Dingo\OAuth2\Storage\Fluent\Client;
+use Dingo\OAuth2\Storage\Fluent\AuthorizationCode;
 
 class FluentAdapter extends Adapter {
 
@@ -69,7 +70,7 @@ class FluentAdapter extends Adapter {
 	 */
 	public function createAuthorizationStorage()
 	{
-
+		return new AuthorizationCode($this->connection, $this->tables);
 	}
 
 	/**
