@@ -35,6 +35,15 @@ class Client extends Fluent implements ClientInterface {
 			$query->where($this->tables['clients'].'.secret', $secret);
 		}
 
+		// If only the clients redirection URI is given then we must correctly
+		// validate the client by comparing its ID and the redirection URI.
+		elseif (is_null($secret) and ! is_null($redirectUri))
+		{
+			$query->addSelect($this->tables['client_endpoints'].'.uri')
+				  ->join($this->tables['client_endpoints'], $this->tables['clients'].'.id', '=', $this->tables['client_endpoints'].'.client_id')
+				  ->where($this->tables['client_endpoints'].'.uri', $redirectUri);
+		}
+
 		$query->where($this->tables['clients'].'.id', $id);
 
 		if ( ! $client = $query->first())
