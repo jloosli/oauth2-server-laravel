@@ -18,7 +18,7 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('dingo/oauth2-server-laravel', 'oauth2-server');
+		$this->package('dingo/oauth2-server-laravel', 'oauth');
 	}
 
 	/**
@@ -44,18 +44,18 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	 */
 	protected function registerAuthorizationServer()
 	{
-		$this->app['dingo.oauth2.authorization'] = $this->app->share(function($app)
+		$this->app['dingo.oauth.authorization'] = $this->app->share(function($app)
 		{
-			$server = new Authorization($app['dingo.oauth2.storage'], $app['request']);
+			$server = new Authorization($app['dingo.oauth.storage'], $app['request']);
 
 			// Set the access token and refresh token expirations on the server.
-			$server->setAccessTokenExpiration($app['config']['oauth2-server::expirations.access']);
+			$server->setAccessTokenExpiration($app['config']['oauth::expirations.access']);
 
-			$server->setRefreshTokenExpiration($app['config']['oauth2-server::expirations.refresh']);
+			$server->setRefreshTokenExpiration($app['config']['oauth::expirations.refresh']);
 
 			// Spin through each of the grants listed in the configuration file and
 			// build an array of grants since some grants can be given options.
-			foreach ($app['config']['oauth2-server::grants'] as $key => $value)
+			foreach ($app['config']['oauth::grants'] as $key => $value)
 			{
 				if ( ! is_string($key))
 				{
@@ -111,9 +111,9 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	 */
 	protected function registerResourceServer()
 	{
-		$this->app['dingo.oauth2.resource'] = $this->app->share(function($app)
+		$this->app['dingo.oauth.resource'] = $this->app->share(function($app)
 		{
-			return new Resource($app['dingo.oauth2.storage'], $app['request']);
+			return new Resource($app['dingo.oauth.storage'], $app['request']);
 		});
 	}
 
@@ -124,9 +124,9 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	 */
 	protected function registerStorage()
 	{
-		$this->app['dingo.oauth2.storage'] = $this->app->share(function($app)
+		$this->app['dingo.oauth.storage'] = $this->app->share(function($app)
 		{
-			return $app['config']['oauth2-server::storage']($app);
+			return $app['config']['oauth::storage']($app);
 		});
 	}
 
@@ -137,21 +137,21 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	 */
 	protected function registerCommands()
 	{
-		$this->app['dingo.oauth2.command.install'] = $this->app->share(function($app)
+		$this->app['dingo.oauth.command.install'] = $this->app->share(function($app)
 		{
-			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth2-server::tables']);
+			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth::tables']);
 
 			return new InstallCommand($builder);
 		});
 
-		$this->app['dingo.oauth2.command.uninstall'] = $this->app->share(function($app)
+		$this->app['dingo.oauth.command.uninstall'] = $this->app->share(function($app)
 		{
-			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth2-server::tables']);
+			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth::tables']);
 
 			return new UninstallCommand($builder);
 		});
 
-		$this->commands('dingo.oauth2.command.install', 'dingo.oauth2.command.uninstall');
+		$this->commands('dingo.oauth.command.install', 'dingo.oauth.command.uninstall');
 	}
 
 }
