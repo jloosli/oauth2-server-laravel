@@ -19,6 +19,16 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('dingo/oauth2-server-laravel', 'oauth');
+
+		$this->app['Dingo\OAuth2\Server\Authorization'] = function($app)
+		{
+			return $app['dingo.oauth.authorization'];
+		};
+
+		$this->app['Dingo\OAuth2\Server\Resource'] = function($app)
+		{
+			return $app['dingo.oauth.resource'];
+		};
 	}
 
 	/**
