@@ -55,53 +55,53 @@ class TableBuilder {
 	public function up(Command $command)
 	{
 		// Create the authorization codes table.
-		$this->creating($this->tables['authorization_codes']);
+		$this->creating($command, $this->tables['authorization_codes']);
 
 		$this->createAuthorizationCodesTable();
 
-		$this->done();
+		$this->done($command);
 
 		// Create the authorization code scopes table.
-		$this->creating($this->tables['authorization_code_scopes']);
+		$this->creating($command, $this->tables['authorization_code_scopes']);
 		
 		$this->createAuthorizationCodeScopesTable();
 
-		$this->done();
+		$this->done($command);
 
 		// Create the clients table.
-		$this->creating($this->tables['clients']);
+		$this->creating($command, $this->tables['clients']);
 
 		$this->createClientsTable();
 
-		$this->done();
+		$this->done($command);
 
 		// Create the client endpoints table.
-		$this->creating($this->tables['client_endpoints']);
+		$this->creating($command, $this->tables['client_endpoints']);
 
 		$this->createClientEndpointsTable();
 
-		$this->done();
+		$this->done($command);
 
 		// Create the scopes table.
-		$this->creating($this->tables['scopes']);
+		$this->creating($command, $this->tables['scopes']);
 
 		$this->createScopesTable();
 
-		$this->done();
+		$this->done($command);
 
 		// Create the tokens table.
-		$this->creating($this->tables['tokens']);
+		$this->creating($command, $this->tables['tokens']);
 
 		$this->createTokensTable();
 
-		$this->done();
+		$this->done($command);
 
 		// Create the token scopes table.
-		$this->creating($this->tables['token_scopes']);
+		$this->creating($command, $this->tables['token_scopes']);
 
 		$this->createTokenScopesTable();
 
-		$this->done();
+		$this->done($command);
 	}
 
 	/**
@@ -112,33 +112,47 @@ class TableBuilder {
 	 */
 	public function down(Command $command)
 	{
-		foreach ($this->tables as $key => $table)
+		foreach ($this->tables as $table)
 		{
-			$command->getOutput()->write('Dropping '.str_replace('_', ' ', $key).' table... ');
+			$this->dropping($command, $table);
 
 			$this->schema->dropIfExists($table);
 
-			$command->getOutput()->writeln('<info>Done!</info>');
+			$this->done($command);
 		}
 	}
 
 	/**
 	 * Write a creating message to the output.
 	 * 
+	 * @param  \Illuminate\Console\Command  $command
 	 * @param  string  $table
 	 * @return void
 	 */
-	protected function creating($table)
+	protected function creating(Command $command, $table)
 	{
 		$command->getOutput()->write('Creating "'.$table.'" table... ');
 	}
 
 	/**
-	 * Write a done message to the output.
+	 * Write a dropping message to the output.
 	 * 
+	 * @param  \Illuminate\Console\Command  $command
+	 * @param  string  $table
 	 * @return void
 	 */
-	protected function done()
+	protected function dropping(Command $command, $table)
+	{
+		$command->getOutput()->write('Dropping "'.$table.'" table... ');
+	}
+
+	/**
+	 * Write a done message to the output.
+	 * 
+	 * @param  \Illuminate\Console\Command  $command
+	 * @return void
+	 */
+	protected function done(Command $command)
 	{
 		$command->getOutput()->writeln('<info>Done!</info>');
 	}
