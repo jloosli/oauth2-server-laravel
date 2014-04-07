@@ -1,6 +1,8 @@
 {
     "name": "dingo/oauth2-server-laravel",
     "description": "A Laravel wrapper for the Dingo OAuth 2.0 server.",
+    "license": "BSD-3-Clause",
+    "keywords": ["oauth2", "laravel", "dingo"],
     "authors": [
         {
             "name": "Jason Lewis",
