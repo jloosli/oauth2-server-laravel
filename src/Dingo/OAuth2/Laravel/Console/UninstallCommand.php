@@ -7,7 +7,7 @@ class UninstallCommand extends Command {
 	 * 
 	 * @var string
 	 */
-	protected $name = 'oauth2:uninstall';
+	protected $name = 'oauth:uninstall';
 
 	/**
 	 * Command description.

@@ -7,7 +7,7 @@ class InstallCommand extends Command {
 	 * 
 	 * @var string
 	 */
-	protected $name = 'oauth2:install';
+	protected $name = 'oauth:install';
 
 	/**
 	 * Command description.
