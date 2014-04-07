@@ -14,17 +14,22 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 	 * @param  mixed  $userId
 	 * @param  string  $redirectUri
 	 * @param  int  $expires
-	 * @return \Dingo\OAuth2\Entity\AuthorizationCode
+	 * @return \Dingo\OAuth2\Entity\AuthorizationCode|bool
 	 */
 	public function create($code, $clientId, $userId, $redirectUri, $expires)
 	{
-		$this->connection->table($this->tables['authorization_codes'])->insert([
+		$payload = [
 			'code'         => $code,
 			'client_id'    => $clientId,
 			'user_id'      => $userId,
 			'redirect_uri' => $redirectUri,
 			'expires'      => date('Y-m-d H:i:s', $expires)
-		]);
+		];
+
+		if ( ! $this->connection->table($this->tables['authorization_codes'])->insert($payload))
+		{
+			return false;
+		}
 
 		return new AuthorizationCodeEntity($code, $clientId, $userId, $redirectUri, $expires);
 	}
@@ -55,7 +60,7 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 	 * Get a code from storage.
 	 * 
 	 * @param  string  $code
-	 * @return \Dingo\OAuth2\Entity\AuthorizationCode
+	 * @return \Dingo\OAuth2\Entity\AuthorizationCode|bool
 	 */
 	public function get($code)
 	{
@@ -82,7 +87,7 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 
 		foreach ($query->get() as $scope)
 		{
-			$scopes[$scope['scope']] = new ScopeEntity($scope->scope, $scope->name, $scope->description);
+			$scopes[$scope->scope] = new ScopeEntity($scope->scope, $scope->name, $scope->description);
 		}
 
 		$code->attachScopes($scopes);
