@@ -51,11 +51,14 @@ class Client extends Fluent implements ClientInterface {
 			return false;
 		}
 
-		// If no redirection URI was given then we'll set it to null so that we
-		// can create a new Dingo\OAuth2\Entity\Client instance.
+		// If no redirection URI was given then we'll fetch one from storage so that
+		// it can be included in the entity.
 		if ( ! isset($client->uri))
 		{
-			$client->uri = null;
+			$client->uri = $this->connection->table($this->tables['client_endpoints'])
+								->where('client_id', $id)
+								->where('is_default', 1)
+								->pluck('uri');
 		}
 
 		return new ClientEntity($client->id, $client->secret, $client->name, $client->uri);
