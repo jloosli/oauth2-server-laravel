@@ -136,7 +136,7 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	{
 		$this->app['dingo.oauth.storage'] = $this->app->share(function($app)
 		{
-			return $app['config']['oauth::storage']($app);
+			return ($app['config']['oauth::storage']($app))->setTables($app['config']['oauth::tables']);
 		});
 	}
 
