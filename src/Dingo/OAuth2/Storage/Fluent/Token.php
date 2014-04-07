@@ -14,17 +14,22 @@ class Token extends Fluent implements TokenInterface {
 	 * @param  string  $clientId
 	 * @param  mixed  $userId
 	 * @param  int  $expires
-	 * @return \Dingo\OAuth2\Entity\Token
+	 * @return \Dingo\OAuth2\Entity\Token|bool
 	 */
 	public function create($token, $type, $clientId, $userId, $expires)
 	{
-		$this->connection->table($this->tables['tokens'])->insert([
+		$payload = [
 			'token'     => $token,
 			'type'      => $type,
 			'client_id' => $clientId,
 			'user_id'   => $userId,
 			'expires'   => date('Y-m-d H:i:s', $expires)
-		]);
+		];
+
+		if ( ! $this->connection->table($this->tables['tokens'])->insert($payload))
+		{
+			return false;
+		}
 
 		return new TokenEntity($token, $type, $clientId, $userId, $expires);
 	}
@@ -95,7 +100,7 @@ class Token extends Fluent implements TokenInterface {
 
 		foreach ($query->get() as $scope)
 		{
-			$scopes[$scope['scope']] = new ScopeEntity($scope->scope, $scope->name, $scope->description);
+			$scopes[$scope->scope] = new ScopeEntity($scope->scope, $scope->name, $scope->description);
 		}
 
 		$token->attachScopes($scopes);
