@@ -3,8 +3,11 @@
 use RuntimeException;
 use Dingo\OAuth2\Server\Resource;
 use Dingo\OAuth2\Server\Authorization;
+use Dingo\OAuth2\Laravel\TableBuilder;
 use Dingo\OAuth2\Storage\FluentAdapter;
 use Illuminate\Support\ServiceProvider;
+use Dingo\OAuth2\Laravel\Console\InstallCommand;
+use Dingo\OAuth2\Laravel\Console\UninstallCommand;
 
 class OAuth2ServiceProvider extends ServiceProvider {
 
@@ -30,6 +33,8 @@ class OAuth2ServiceProvider extends ServiceProvider {
 		$this->registerResourceServer();
 
 		$this->registerStorage();
+
+		$this->registerCommands();
 	}
 
 	/**
@@ -123,6 +128,30 @@ class OAuth2ServiceProvider extends ServiceProvider {
 		{
 			return $app['config']['oauth2-server::storage']($app);
 		});
+	}
+
+	/**
+	 * Register commands.
+	 * 
+	 * @return void
+	 */
+	protected function registerCommands()
+	{
+		$this->app['dingo.oauth2.command.install'] = $this->app->share(function($app)
+		{
+			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth2-server::tables']);
+
+			return new InstallCommand($builder);
+		});
+
+		$this->app['dingo.oauth2.command.uninstall'] = $this->app->share(function($app)
+		{
+			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth2-server::tables']);
+
+			return new UninstallCommand($builder);
+		});
+
+		$this->commands('dingo.oauth2.command.install', 'dingo.oauth2.command.uninstall');
 	}
 
 }

@@ -69,6 +69,29 @@ return [
 	'storage' => function($app)
 	{
 		return new Dingo\OAuth2\Storage\FluentAdapter($app['db']->connection());
-	}
+	},
+
+	/*
+	|--------------------------------------------------------------------------
+	| Storage Tables
+	|--------------------------------------------------------------------------
+	|
+	| You can optionally configure the tables used by the storage adapter so
+	| they better fit with your overall database design. You only need to
+	| change the value of each array member, DO NOT change the keys.
+	|
+	*/
+
+	'tables' => [
+
+		'clients'                   => 'oauth_clients',
+		'client_endpoints'          => 'oauth_client_endpoints',
+		'tokens'                    => 'oauth_tokens',
+		'token_scopes'              => 'oauth_token_scopes',
+		'authorization_codes'       => 'oauth_authorization_codes',
+		'authorization_code_scopes' => 'oauth_authorization_code_scopes',
+		'scopes'                    => 'oauth_scopes'
+
+	]
 
 ];
