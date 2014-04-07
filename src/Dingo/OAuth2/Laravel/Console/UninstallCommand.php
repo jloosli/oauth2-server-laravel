@@ -14,7 +14,7 @@ class UninstallCommand extends Command {
 	 * 
 	 * @var string
 	 */
-	protected $description = 'Run the OAuth 2.0 package uninstaller';
+	protected $description = 'Run the OAuth 2.0 uninstaller';
 
 	/**
 	 * Fire the uninstall command.

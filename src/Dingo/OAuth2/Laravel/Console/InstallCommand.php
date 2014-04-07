@@ -14,7 +14,7 @@ class InstallCommand extends Command {
 	 * 
 	 * @var string
 	 */
-	protected $description = 'Run the OAuth 2.0 package installer';
+	protected $description = 'Run the OAuth 2.0 installer';
 
 	/**
 	 * Fire the install command.
