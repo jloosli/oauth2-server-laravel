@@ -77,10 +77,7 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 		// the associated scopes of the code.
 		$query = $this->connection->table($this->tables['scopes'])
 								  ->select($this->tables['scopes'].'.*')
-								  ->leftJoin($this->tables['authorization_code_scopes'], function($join)
-								  	{
-								  		$join->on($this->tables['scopes'].'.scope', '=', $this->tables['authorization_code_scopes'].'.scope');
-								  	})
+								  ->leftJoin($this->tables['authorization_code_scopes'], $this->tables['scopes'].'.scope', '=', $this->tables['authorization_code_scopes'].'.scope')
 								  ->where($this->tables['authorization_code_scopes'].'.code', $code->getCode());
 
 		$scopes = [];
