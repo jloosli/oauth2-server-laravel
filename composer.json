@@ -11,7 +11,7 @@
         "php": ">=5.4.0",
         "illuminate/support": "4.1.*",
         "illuminate/database": "4.1.*",
-        "dingo/oauth2-server": "dev-master"
+        "dingo/oauth2-server": "0.1.*"
     },
     "autoload": {
         "psr-0": {
