@@ -55,53 +55,53 @@ class TableBuilder {
 	public function up(Command $command)
 	{
 		// Create the authorization codes table.
-		$command->getOutput()->write('Creating authorization codes table... ');
+		$this->creating($this->tables['authorization_codes']);
 
 		$this->createAuthorizationCodesTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 
 		// Create the authorization code scopes table.
-		$command->getOutput()->write('Creating authorization code scopes table... ');
+		$this->creating($this->tables['authorization_code_scopes']);
 		
 		$this->createAuthorizationCodeScopesTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 
 		// Create the clients table.
-		$command->getOutput()->write('Creating clients table... ');
+		$this->creating($this->tables['clients']);
 
 		$this->createClientsTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 
 		// Create the client endpoints table.
-		$command->getOutput()->write('Creating client endpoints table... ');
+		$this->creating($this->tables['client_endpoints']);
 
 		$this->createClientEndpointsTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 
 		// Create the scopes table.
-		$command->getOutput()->write('Creating scopes table... ');
+		$this->creating($this->tables['scopes']);
 
 		$this->createScopesTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 
 		// Create the tokens table.
-		$command->getOutput()->write('Creating tokens table... ');
+		$this->creating($this->tables['tokens']);
 
 		$this->createTokensTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 
 		// Create the token scopes table.
-		$command->getOutput()->write('Creating token scopes table... ');
+		$this->creating($this->tables['token_scopes']);
 
 		$this->createTokenScopesTable();
 
-		$command->getOutput()->writeln('<info>Done!</info>');
+		$this->done();
 	}
 
 	/**
@@ -120,6 +120,27 @@ class TableBuilder {
 
 			$command->getOutput()->writeln('<info>Done!</info>');
 		}
+	}
+
+	/**
+	 * Write a creating message to the output.
+	 * 
+	 * @param  string  $table
+	 * @return void
+	 */
+	protected function creating($table)
+	{
+		$command->getOutput()->write('Creating "'.$table.'" table... ');
+	}
+
+	/**
+	 * Write a done message to the output.
+	 * 
+	 * @return void
+	 */
+	protected function done()
+	{
+		$command->getOutput()->writeln('<info>Done!</info>');
 	}
 
 	/**
