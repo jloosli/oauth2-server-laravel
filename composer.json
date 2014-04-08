@@ -20,8 +20,8 @@
         "mockery/mockery": "0.9.*"
     },
     "autoload": {
-        "psr-0": {
-            "Dingo\\OAuth2": "src/"
+        "psr-4": {
+            "Dingo\\OAuth2\\": "src"
         }
     },
     "minimum-stability": "stable"
