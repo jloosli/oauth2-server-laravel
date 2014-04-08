@@ -44,7 +44,7 @@ class OAuth2ServiceProvider extends ServiceProvider {
 			}
 			catch (InvalidTokenException $exception)
 			{
-				return new Response($exception->getMessage(), $exception->getStatusCode());
+				return $this->app['config']['oauth::unauthorized']($exception->getMessage(), $exception->getStatusCode());
 			}
 		});
 	}

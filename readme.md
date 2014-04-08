@@ -59,7 +59,7 @@ Route::get('api/secrets', ['before' => 'oauth', function()
 }]);
 ```
 
-If an access token is not provided in either the query string or via the `Authorization` header then a `401 Unauthorized` response is returned.
+If an access token is not provided in either the query string or via the `Authorization` header then a `401 Unauthorized` response is returned. This unauthorized response can be configured in the configuration file you published earlier.
 
 #### Scopes
 

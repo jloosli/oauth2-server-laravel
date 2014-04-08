@@ -106,6 +106,22 @@ return [
 		'authorization_code_scopes' => 'oauth_authorization_code_scopes',
 		'scopes'                    => 'oauth_scopes'
 
-	]
+	],
+
+	/*
+	|--------------------------------------------------------------------------
+	| Unauthorized Resource Request
+	|--------------------------------------------------------------------------
+	|
+	| By default, when an unauthorized request is made to a protected resource
+	| we'll return a generic response with the error message and the
+	| appropriate HTTP status code (usually 401).
+	|
+	*/
+
+	'unauthorized' => function($error, $statusCode)
+	{
+		return Response::make($error, $statusCode);
+	}
 
 ];
