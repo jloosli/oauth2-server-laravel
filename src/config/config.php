@@ -57,6 +57,20 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Default Scopes
+	|--------------------------------------------------------------------------
+	|
+	| If you have common scopes that are used for protecting all resources
+	| you can avoid having to specify on the filter of each route by
+	| making them the default scopes. Any protected resource will
+	| require the access token to have these scopes.
+	|
+	*/
+
+	'scopes' => [],
+
+	/*
+	|--------------------------------------------------------------------------
 	| Storage Adapter
 	|--------------------------------------------------------------------------
 	|

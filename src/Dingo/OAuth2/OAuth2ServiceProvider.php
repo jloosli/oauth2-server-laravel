@@ -1,12 +1,14 @@
 <?php namespace Dingo\OAuth2;
 
 use RuntimeException;
+use Illuminate\Http\Response;
 use Dingo\OAuth2\Server\Resource;
 use Dingo\OAuth2\Server\Authorization;
 use Dingo\OAuth2\Laravel\TableBuilder;
 use Dingo\OAuth2\Storage\FluentAdapter;
 use Illuminate\Support\ServiceProvider;
 use Dingo\OAuth2\Laravel\Console\InstallCommand;
+use Dingo\OAuth2\Exception\InvalidTokenException;
 use Dingo\OAuth2\Laravel\Console\UninstallCommand;
 
 class OAuth2ServiceProvider extends ServiceProvider {
@@ -29,6 +31,22 @@ class OAuth2ServiceProvider extends ServiceProvider {
 		{
 			return $app['dingo.oauth.resource'];
 		};
+
+		// Register the "oauth" filter which is used to protect resources by
+		// requiring a valid access token with sufficient scopes.
+		$this->app['router']->filter('oauth', function($route, $request)
+		{
+			$scopes = func_num_args() > 2 ? array_slice(func_get_args(), 2) : [];
+
+			try
+			{
+				$this->app['dingo.oauth.resource']->validateRequest($scopes);
+			}
+			catch (InvalidTokenException $exception)
+			{
+				return new Response($exception->getMessage(), $exception->getStatusCode());
+			}
+		});
 	}
 
 	/**
@@ -123,7 +141,11 @@ class OAuth2ServiceProvider extends ServiceProvider {
 	{
 		$this->app['dingo.oauth.resource'] = $this->app->share(function($app)
 		{
-			return new Resource($app['dingo.oauth.storage'], $app['request']);
+			$server = new Resource($app['dingo.oauth.storage'], $app['request']);
+
+			$server->setDefaultScopes($app['config']['oauth::scopes']);
+
+			return $server;
 		});
 	}
 
