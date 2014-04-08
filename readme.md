@@ -14,6 +14,8 @@ composer require dingo/oauth2-server-laravel:0.1.*
 
 > Note that this package is still under development and has not been tagged as stable.
 
+Make sure you add `Dingo\OAuth2\OAuth2ServiceProvider` to your array of providers in `app/config/app.php`.
+
 ## Storage Adapters
 
 This wrapper provides an additional storage adapter that integrates with Laravel's Fluent Query Builder.
@@ -45,6 +47,32 @@ Both commands will ask you what connection you would like to use. You can bypass
 ```
 artisan oauth:install --connection mysql
 ```
+
+### Protecting Resources
+
+In your Laravel application a resource might refer to an API endpoint. To protect a resource you can apply the `oauth` filter to the routes you would like to protect.
+
+```
+Route::get('api/secrets', ['before' => 'oauth', function()
+{
+	return 'This route is protected!';
+}]);
+```
+
+If an access token is not provided in either the query string or via the `Authorization` header then a `401 Unauthorized` response is returned.
+
+#### Scopes
+
+Using scopes you can finely tune protected resources by only allowing access tokens that have been issued with the scopes. To indicate what scopes are required to access a protected resource simply pass them as a comma separated list to the before filter.
+
+```
+Route::get('api/secrets', ['before' => 'oauth:read,write', function()
+{
+	return 'This route is protected and only access tokens with the "read" and "write" scopes can access it!';
+}]);
+```
+
+If you find yourself defining the same scopes for every resource you can set the default scopes to be used by all protected resources in the configuration file you published earlier. Scopes provided via the filter are merged with the default scopes.
 
 ### Automatic Dependency Resolution for Authorization and Resource Servers
 
