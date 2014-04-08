@@ -40,8 +40,6 @@ class Command extends IlluminateCommand {
 			$connection = $this->ask("What database connection would you like to use? (default: {$default})</question> ", $default);
 		}
 
-		$this->line('');
-
 		if ( ! array_key_exists($connection, $this->laravel['config']->get('database.connections')))
 		{
 			$this->error('Unable to use the given connection as it is not defined within the available connections.');

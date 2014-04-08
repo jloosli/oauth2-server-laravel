@@ -25,6 +25,13 @@ class UninstallCommand extends Command {
 	{
 		$connection = $this->getConnection();
 
+		if ( ! $this->confirm('Are you sure you want to uninstall? This will delete any and all data and cannot be undone. (y/N)</question> ', false))
+		{
+			return;
+		}
+		
+		$this->line('');
+
 		$this->builder->on($connection)->down($this);
 
 		$this->line('');

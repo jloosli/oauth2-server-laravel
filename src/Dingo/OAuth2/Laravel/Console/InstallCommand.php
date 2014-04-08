@@ -25,6 +25,8 @@ class InstallCommand extends Command {
 	{
 		$connection = $this->getConnection();
 
+		$this->line('');
+
 		$this->builder->on($connection)->up($this);
 
 		$this->line('');
