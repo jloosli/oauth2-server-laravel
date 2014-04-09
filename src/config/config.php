@@ -13,9 +13,12 @@ return [
 	| Supported: "password", "refresh", "authorization",
 	|            "implicit", "client"
 	|
-	| The "password" grant must have a callback which is used to when
+	| The "password" grant MUST have a callback which is used to when
 	| authenticating the resource owner. This callback should return
 	| the authorized users ID if successful or false if it failed.
+	|
+	| The "authorization" grant MAY have a callback which is used
+	| when a user successfully authorizes a client.
 	|
 	*/
 

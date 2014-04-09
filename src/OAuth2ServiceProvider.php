@@ -124,6 +124,10 @@ class OAuth2ServiceProvider extends ServiceProvider {
 				{
 					$instance->setAuthenticationCallback(array_pop($options));
 				}
+				elseif ($grant == 'authorization' and ! empty($options))
+				{
+					$server->setAuthorizedCallback(array_pop($options));	
+				}
 
 				$server->registerGrant($instance);
 			}
