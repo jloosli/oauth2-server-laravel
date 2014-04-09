@@ -18,18 +18,13 @@ class Token extends Fluent implements TokenInterface {
 	 */
 	public function create($token, $type, $clientId, $userId, $expires)
 	{
-		$payload = [
+		$this->connection->table($this->tables['tokens'])->insert([
 			'token'     => $token,
 			'type'      => $type,
 			'client_id' => $clientId,
 			'user_id'   => $userId,
 			'expires'   => date('Y-m-d H:i:s', $expires)
-		];
-
-		if ( ! $this->connection->table($this->tables['tokens'])->insert($payload))
-		{
-			return false;
-		}
+		]);
 
 		return new TokenEntity($token, $type, $clientId, $userId, $expires);
 	}
@@ -64,6 +59,11 @@ class Token extends Fluent implements TokenInterface {
 	 */
 	public function get($token)
 	{
+		if (isset($this->cache[$token]))
+		{
+			return $this->cache[$token];
+		}
+
 		$query = $this->connection->table($this->tables['tokens'])->where('token', $token);
 
 		if ( ! $token = $query->first())
@@ -71,9 +71,7 @@ class Token extends Fluent implements TokenInterface {
 			return false;
 		}
 
-		$token = new TokenEntity($token->token, $token->type, $token->client_id, $token->user_id, strtotime($token->expires));
-
-		return $token;
+		return $this->cache[$token->token] = new TokenEntity($token->token, $token->type, $token->client_id, $token->user_id, strtotime($token->expires));;
 	}
 
 	/**
@@ -105,7 +103,7 @@ class Token extends Fluent implements TokenInterface {
 
 		$token->attachScopes($scopes);
 
-		return $token;
+		return $this->cache[$token->getToken()] = $token;
 	}
 
 	/**
@@ -116,6 +114,8 @@ class Token extends Fluent implements TokenInterface {
 	 */
 	public function delete($token)
 	{
+		unset($this->cache[$token]);
+		
 		$this->connection->table($this->tables['tokens'])->where('token', $token)->delete();
 
 		$this->connection->table($this->tables['token_scopes'])->where('token', $token)->delete();

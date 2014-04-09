@@ -14,22 +14,17 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 	 * @param  mixed  $userId
 	 * @param  string  $redirectUri
 	 * @param  int  $expires
-	 * @return \Dingo\OAuth2\Entity\AuthorizationCode|bool
+	 * @return \Dingo\OAuth2\Entity\AuthorizationCode
 	 */
 	public function create($code, $clientId, $userId, $redirectUri, $expires)
 	{
-		$payload = [
+		$this->connection->table($this->tables['authorization_codes'])->insert([
 			'code'         => $code,
 			'client_id'    => $clientId,
 			'user_id'      => $userId,
 			'redirect_uri' => $redirectUri,
 			'expires'      => date('Y-m-d H:i:s', $expires)
-		];
-
-		if ( ! $this->connection->table($this->tables['authorization_codes'])->insert($payload))
-		{
-			return false;
-		}
+		]);
 
 		return new AuthorizationCodeEntity($code, $clientId, $userId, $redirectUri, $expires);
 	}
@@ -64,6 +59,11 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 	 */
 	public function get($code)
 	{
+		if (isset($this->cache[$code]))
+		{
+			return $this->cache[$code];
+		}
+
 		$query = $this->connection->table($this->tables['authorization_codes'])->where('code', $code);
 
 		if ( ! $code = $query->first())
@@ -89,7 +89,7 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 
 		$code->attachScopes($scopes);
 
-		return $code;
+		return $this->cache[$code->getCode()] = $code;
 	}
 
 	/**
@@ -100,6 +100,8 @@ class AuthorizationCode extends Fluent implements AuthorizationCodeInterface {
 	 */
 	public function delete($code)
 	{
+		unset($this->cache[$code]);
+		
 		$this->connection->table($this->tables['authorization_codes'])->where('code', $code)->delete();
 
 		$this->connection->table($this->tables['authorization_code_scopes'])->where('code', $code)->delete();

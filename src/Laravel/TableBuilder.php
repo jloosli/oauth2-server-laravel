@@ -169,7 +169,7 @@ class TableBuilder {
 			$table->string('code', 40)->primary();
 			$table->string('client_id');
 			$table->string('user_id');
-			$table->string('redirect_uri');
+			$table->string('redirect_uri')->nullable();
 			$table->dateTime('expires');
 		});
 	}

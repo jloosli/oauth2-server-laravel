@@ -19,6 +19,13 @@ abstract class Fluent {
 	protected $tables;
 
 	/**
+	 * Cached queries and the results.
+	 * 
+	 * @var array
+	 */
+	protected $cache;
+
+	/**
 	 * Create a new Dingo\OAuth2\Storage\Fluent\Fluent instance.
 	 * 
 	 * @param  \Illuminate\Database\Connection  $connection

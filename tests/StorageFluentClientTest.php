@@ -62,6 +62,35 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 	}
 
 
+	public function testGetClientByIdPullsFromCacheOnSecondCall()
+	{
+		$storage = new ClientStorage($this->db, ['clients' => 'clients', 'client_endpoints' => 'client_endpoints']);
+
+		$this->db->shouldReceive('table')->once()->with('clients')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('select')->once()->with('clients.*')->andReturn($builder);
+		$builder->shouldReceive('where')->once()->with('clients.id', 'test')->andReturn($builder);
+		$builder->shouldReceive('first')->once()->andReturn((object) [
+			'id' => 'test',
+			'secret' => 'test',
+			'name' => 'test'
+		]);
+
+		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('where')->once()->with('client_id', 'test')->andReturn($builder);
+		$builder->shouldReceive('where')->once()->with('is_default', 1)->andReturn($builder);
+		$builder->shouldReceive('pluck')->once()->with('uri')->andReturn(null);
+
+		$storage->get('test');
+
+		$this->assertEquals([
+			'id' => 'test',
+			'secret' => 'test',
+			'name' => 'test',
+			'redirect_uri' => null
+		], $storage->get('test')->getAttributes());
+	}
+
+
 	public function testGetClientByIdSucceedsAndRedirectionUriIsFound()
 	{
 		$storage = new ClientStorage($this->db, ['clients' => 'clients', 'client_endpoints' => 'client_endpoints']);
@@ -174,6 +203,51 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'name' => 'test',
 			'redirect_uri' => 'test'
 		], $client->getAttributes());
+	}
+
+
+	public function testCreatingClientSucceedsAndReturnsClientEntity()
+	{
+		$storage = new ClientStorage($this->db, ['clients' => 'clients', 'client_endpoints' => 'client_endpoints']);
+
+		$this->db->shouldReceive('table')->once()->with('clients')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('insert')->once()->with([
+			'id'     => 'test',
+			'secret' => 'test',
+			'name'   => 'test'
+		]);
+
+		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('insert')->once()->with([
+			[
+				'client_id' => 'test',
+				'uri' => 'test',
+				'is_default'   => 1
+			]
+		]);
+
+		$this->assertEquals([
+			'id' => 'test',
+			'secret' => 'test',
+			'name' => 'test',
+			'redirect_uri' => 'test'
+		], $storage->create('test', 'test', 'test', [['uri' => 'test', 'default' => true]])->getAttributes());
+	}
+
+
+	public function testDeletingClient()
+	{
+		$storage = new ClientStorage($this->db, ['clients' => 'clients', 'client_endpoints' => 'client_endpoints']);
+
+		$this->db->shouldReceive('table')->once()->with('clients')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('where')->once()->with('id', 'test')->andReturn($builder);
+		$builder->shouldReceive('delete')->once();
+
+		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('where')->once()->with('client_id', 'test')->andReturn($builder);
+		$builder->shouldReceive('delete')->once();
+
+		$storage->delete('test');
 	}
 
 

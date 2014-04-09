@@ -20,23 +20,6 @@ class StorageFluentTokenTest extends PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testCreateTokenEntityFailsAndReturnsFalse()
-	{
-		$storage = new TokenStorage($this->db, ['tokens' => 'tokens']);
-
-		$this->db->shouldReceive('table')->once()->with('tokens')->andReturn($builder = $this->getBuilderMock());
-		$builder->shouldReceive('insert')->once()->with([
-			'token'        => 'test',
-			'type'         => 'access',
-			'client_id'    => 'test',
-			'user_id'      => 1,
-			'expires'      => '1991-01-31 12:00:00'
-		])->andReturn(false);
-
-		$this->assertFalse($storage->create('test', 'access', 'test', 1, strtotime('31 January 1991 12:00:00')));
-	}
-
-
 	public function testCreateTokenEntitySucceedsAndReturnsTokenEntity()
 	{
 		$storage = new TokenStorage($this->db, ['tokens' => 'tokens']);
@@ -122,6 +105,33 @@ class StorageFluentTokenTest extends PHPUnit_Framework_TestCase {
 			'scopes' => [],
 			'expires' => strtotime('1991-01-31 12:00:00')
 		], $token->getAttributes());
+	}
+
+
+	public function testGetTokenPullsFromCacheOnSecondCall()
+	{
+		$storage = new TokenStorage($this->db, ['tokens' => 'tokens']);
+
+		$this->db->shouldReceive('table')->once()->with('tokens')->andReturn($builder = $this->getBuilderMock());
+		$builder->shouldReceive('where')->once()->with('token', 'test')->andReturn($builder);
+		$builder->shouldReceive('first')->once()->andReturn((object) [
+			'token' => 'test',
+			'type' => 'access',
+			'client_id' => 'test',
+			'user_id' => 1,
+			'expires' => '1991-01-31 12:00:00'
+		]);
+
+		$storage->get('test');
+
+		$this->assertEquals([
+			'token' => 'test',
+			'type' => 'access',
+			'client_id' => 'test',
+			'user_id' => 1,
+			'scopes' => [],
+			'expires' => strtotime('1991-01-31 12:00:00')
+		], $storage->get('test')->getAttributes());
 	}
 
 
