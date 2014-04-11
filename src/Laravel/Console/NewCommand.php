@@ -95,12 +95,12 @@ class NewCommand extends Command {
 		$this->storage->setConnection($connection);
 
 		// Create some default values for the client ID and the client secret,
-		// we'll also create a blank array for the endpoints.
+		// we'll also create a blank array for the redirection URIs.
 		$id = Token::make();
 
 		$secret = Token::make();
 
-		$endpoints = [];
+		$redirectUris = [];
 
 		$id = $this->ask('New client identifier? (default: '.$id.')</question> ', $id);
 
@@ -110,9 +110,9 @@ class NewCommand extends Command {
 
 		$trusted = $this->confirm('Is this client trusted? (y/N)</question> ', false);
 
-		$endpoints[] = ['uri' => $this->ask('Default client endpoint?</question> '), 'default' => true];
+		$redirectUris[] = ['uri' => $this->ask('Default client redirect URI?</question> '), 'default' => true];
 
-		if ( ! $id or ! $secret or ! $name or empty($endpoints))
+		if ( ! $id or ! $secret or ! $name or empty($redirectUris))
 		{
 			$this->blankLine();
 
@@ -121,14 +121,14 @@ class NewCommand extends Command {
 			exit;
 		}
 
-		while ($this->confirm('Would you like to create another client endpoint? (y/N)</question> ', false))
+		while ($this->confirm('Would you like to create another client redirect URI? (y/N)</question> ', false))
 		{
-			$endpoints[] = ['uri' => $this->ask('Client endpoint?</question> '), 'default' => false];
+			$redirectUris[] = ['uri' => $this->ask('Client redirect URI?</question> '), 'default' => false];
 		}
 
 		$this->blankLine();
 
-		$client = $this->storage('client')->create($id, $secret, $name, $endpoints, $trusted);
+		$client = $this->storage('client')->create($id, $secret, $name, $redirectUris, $trusted);
 
 		$this->info('Client saved! JSON representation of new client:');
 
