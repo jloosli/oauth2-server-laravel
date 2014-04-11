@@ -66,7 +66,7 @@ class Client extends Fluent implements ClientInterface {
 								->pluck('uri');
 		}
 
-		return $this->cache[$client->id] = new ClientEntity($client->id, $client->secret, $client->name, $client->uri);
+		return $this->cache[$client->id] = new ClientEntity($client->id, $client->secret, $client->name, (bool) $client->trusted, $client->uri);
 	}
 
 	/**
@@ -76,14 +76,16 @@ class Client extends Fluent implements ClientInterface {
 	 * @param  string  $secret
 	 * @param  string  $name
 	 * @param  array  $redirectUris
+	 * @param  bool  $trusted
 	 * @return \Dingo\OAuth2\Entity\Client|bool
 	 */
-	public function create($id, $secret, $name, array $redirectUris)
+	public function create($id, $secret, $name, array $redirectUris, $trusted = false)
 	{
 		$this->connection->table($this->tables['clients'])->insert([
-			'id'     => $id,
-			'secret' => $secret,
-			'name'   => $name
+			'id'      => $id,
+			'secret'  => $secret,
+			'name'    => $name,
+			'trusted' => (int) $trusted
 		]);
 
 		$redirectUri = null;
@@ -108,7 +110,7 @@ class Client extends Fluent implements ClientInterface {
 
 		$this->connection->table($this->tables['client_endpoints'])->insert($batch);
 
-		return new ClientEntity($id, $secret, $name, $redirectUri);
+		return new ClientEntity($id, $secret, $name, (bool) $trusted, $redirectUri);
 	}
 
 	/**

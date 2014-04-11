@@ -83,4 +83,17 @@ class FluentAdapter extends Adapter {
 		return new Scope($this->connection, $this->tables);
 	}
 
+	/**
+	 * Set the database connection instance.
+	 * 
+	 * @param  \Illuminate\Database\Connection  $connection
+	 * @return \Dingo\OAuth2\Storage\FluentAdapter
+	 */
+	public function setConnection(Connection $connection)
+	{
+		$this->connection = $connection;
+
+		return $this;
+	}
+
 }
