@@ -1,45 +1,24 @@
 <?php namespace Dingo\OAuth2\Laravel\Console;
 
-use Symfony\Component\Console\Input\InputOption;
+use Dingo\OAuth2\Storage\Adapter;
+use Dingo\OAuth2\Laravel\TableBuilder;
 use Illuminate\Console\Command as IlluminateCommand;
 
 class Command extends IlluminateCommand {
 
 	/**
-	 * Get the database connection.
+	 * Storage adapter instance.
 	 * 
-	 * @return \Illuminate\Database\Connection
+	 * @var \Dingo\OAuth2\Storage\Adapter
 	 */
-	public function getConnection()
-	{
-		if ( ! $connection = $this->option('connection'))
-		{
-			$default = $this->laravel['config']->get('database.default');
-
-			$connection = $this->ask("What database connection would you like to use? (default: {$default})</question> ", $default);
-		}
-
-		if ( ! array_key_exists($connection, $this->laravel['config']->get('database.connections')))
-		{
-			$this->error('Unable to use the given connection as it is not defined within the available connections.');
-
-			exit;
-		}
-
-		return $this->laravel['db']->connection($connection);
-	}
+	protected $storage;
 
 	/**
-	 * Get the console command options.
+	 * Table builder instance.
 	 * 
-	 * @return array
+	 * @var \Dingo\OAuth2\Laravel\TableBuilder
 	 */
-	public function getOptions()
-	{
-		return [
-			['connection', null, InputOption::VALUE_REQUIRED, 'The database connection to be used by the installer.']
-		];
-	}
+	protected $builder;
 
 	/**
 	 * Insert a blank line into the output.
@@ -51,6 +30,65 @@ class Command extends IlluminateCommand {
 		$this->line('');
 
 		return $this;
+	}
+
+	/**
+	 * Get a storage from the storage adapter.
+	 * 
+	 * @param  string  $storage
+	 * @return mixed
+	 */
+	protected function storage($storage)
+	{
+		return $this->storage->get($storage);
+	}
+
+	/**
+	 * Set the storage adapter instance.
+	 * 
+	 * @param  \Dingo\OAuth2\Storage\Adapter  $storage
+	 * @return \Dingo\OAuth2\Laravel\Console\NewCommand
+	 */
+	public function setStorage(Adapter $storage)
+	{
+		$this->storage = $storage;
+
+		return $this;
+	}
+
+	/**
+	 * Set the table builder instance.
+	 * 
+	 * @param  \Dingo\OAuth2\Laravel\TableBuilder  $builder
+	 * @return \Dingo\OAuth2\Laravel\Console\InstallCommand
+	 */
+	public function setTableBuilder(TableBuilder $builder)
+	{
+		$this->builder = $builder;
+
+		return $this;
+	}
+
+	/**
+	 * Get the database connection.
+	 * 
+	 * @return \Illuminate\Database\Connection
+	 */
+	protected function getConnection()
+	{
+		if ( ! $connection = $this->option('connection'))
+		{
+			$default = $this->laravel['config']->get('database.default');
+		}
+
+		if ( ! array_key_exists($connection, $this->laravel['config']->get('database.connections')))
+		{
+			$this->error('Unable to use the given connection as it is not defined within the available connections.');
+
+			exit;
+		}
+
+		return $this->laravel['db']->connection($connection);
 	}
 
 }

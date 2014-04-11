@@ -23,16 +23,14 @@ class UninstallCommand extends InstallCommand {
 	 */
 	public function fire()
 	{
-		$connection = $this->getConnection();
+		$this->builder->on($this->getConnection());
 
 		if ( ! $this->confirm('Are you sure you want to uninstall? This will delete any and all data and cannot be undone. (y/N)</question> ', false))
 		{
 			return;
 		}
 		
-		$this->blankLine();
-
-		$this->builder->on($connection)->down($this);
+		$this->builder->down($this);
 
 		$this->blankLine();
 

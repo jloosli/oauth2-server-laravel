@@ -1,7 +1,6 @@
 <?php namespace Dingo\OAuth2\Laravel\Console;
 
 use Dingo\OAuth2\Token;
-use Dingo\OAuth2\Storage\Adapter;
 use Symfony\Component\Console\Input\InputArgument;
 
 class NewCommand extends Command {
@@ -18,14 +17,7 @@ class NewCommand extends Command {
 	 * 
 	 * @var string
 	 */
-	protected $description = 'Create a new "scope" or "client" entity';
-
-	/**
-	 * Storage adapter instance.
-	 * 
-	 * @var \Dingo\OAuth2\Storage\Adapter
-	 */
-	protected $storage;
+	protected $description = 'Create a new scope or client in storage';
 
 	/**
 	 * Fire the install command.
@@ -43,20 +35,17 @@ class NewCommand extends Command {
 			exit;
 		}
 
-		$connection = $this->getConnection();
+		$this->blankLine();
 
-		$this->storage->setConnection($connection);
-
-		$this->{'create'.ucfirst($entity).'Entity'}($connection);
+		$this->{'create'.ucfirst($entity).'Entity'}();
 	}
 
 	/**
 	 * Create a new scope entity.
 	 * 
-	 * @param  \Illuminate\Database\Connection  $connection
 	 * @return void
 	 */
-	protected function createScopeEntity($connection)
+	protected function createScopeEntity()
 	{
 		$scope = $this->ask('New scope identifier?</question> ');
 
@@ -75,7 +64,7 @@ class NewCommand extends Command {
 
 		$scope = $this->storage('scope')->create($scope, $name, $description);
 
-		$this->info('Scope saved! JSON representation of new scope:');
+		$this->info('Scope created! JSON representation of new scope:');
 
 		$this->blankLine();
 
@@ -87,15 +76,10 @@ class NewCommand extends Command {
 	/**
 	 * Create a new client entity.
 	 * 
-	 * @param  \Illuminate\Database\Connection  $connection
 	 * @return void
 	 */
-	protected function createClientEntity($connection)
+	protected function createClientEntity()
 	{
-		$this->storage->setConnection($connection);
-
-		// Create some default values for the client ID and the client secret,
-		// we'll also create a blank array for the redirection URIs.
 		$id = Token::make();
 
 		$secret = Token::make();
@@ -130,7 +114,7 @@ class NewCommand extends Command {
 
 		$client = $this->storage('client')->create($id, $secret, $name, $redirectUris, $trusted);
 
-		$this->info('Client saved! JSON representation of new client:');
+		$this->info('Client created! JSON representation of new client:');
 
 		$this->blankLine();
 
@@ -147,32 +131,8 @@ class NewCommand extends Command {
 	public function getArguments()
 	{
 		return [
-			['entity', InputArgument::REQUIRED, 'New entity to make ("scope" or "client")']
+			['entity', InputArgument::REQUIRED, 'Entity to create (scope or client).']
 		];
-	}
-
-	/**
-	 * Get a storage from the storage adapter.
-	 * 
-	 * @param  string  $storage
-	 * @return mixed
-	 */
-	protected function storage($storage)
-	{
-		return $this->storage->get($storage);
-	}
-
-	/**
-	 * Set the storage adapter instance.
-	 * 
-	 * @param  \Dingo\OAuth2\Storage\Adapter  $storage
-	 * @return \Dingo\OAuth2\Laravel\Console\NewCommand
-	 */
-	public function setStorage(Adapter $storage)
-	{
-		$this->storage = $storage;
-
-		return $this;
 	}
 
 }

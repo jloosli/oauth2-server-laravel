@@ -18,14 +18,7 @@ class DeleteCommand extends Command {
 	 * 
 	 * @var string
 	 */
-	protected $description = 'Delete a "scope" or "client" entity';
-
-	/**
-	 * Storage adapter instance.
-	 * 
-	 * @var \Dingo\OAuth2\Storage\Adapter
-	 */
-	protected $storage;
+	protected $description = 'Delete a scope or client from storage';
 
 	/**
 	 * Fire the install command.
@@ -43,22 +36,15 @@ class DeleteCommand extends Command {
 			exit;
 		}
 
-		$connection = $this->getConnection();
-
-		$this->blankLine();
-
-		$this->storage->setConnection($connection);
-
-		$this->{'delete'.ucfirst($entity).'Entity'}($connection);
+		$this->{'delete'.ucfirst($entity).'Entity'}();
 	}
 
 	/**
 	 * Delete a scope entity.
 	 * 
-	 * @param  \Illuminate\Database\Connection  $connection
 	 * @return void
 	 */
-	protected function deleteScopeEntity($connection)
+	protected function deleteScopeEntity()
 	{
 		$identifier = $this->argument('identifier');
 
@@ -94,10 +80,9 @@ class DeleteCommand extends Command {
 	/**
 	 * Delete a client entity.
 	 * 
-	 * @param  \Illuminate\Database\Connection  $connection
 	 * @return void
 	 */
-	protected function deleteClientEntity($connection)
+	protected function deleteClientEntity()
 	{
 		$identifier = $this->argument('identifier');
 
@@ -138,33 +123,9 @@ class DeleteCommand extends Command {
 	public function getArguments()
 	{
 		return [
-			['entity', InputArgument::REQUIRED, 'New entity to make ("scope" or "client")'],
-			['identifier', InputArgument::REQUIRED, 'Scope or client identifier']
+			['entity', InputArgument::REQUIRED, 'Entity to delete (scope or client).'],
+			['identifier', InputArgument::REQUIRED, 'Scope or client identifier.']
 		];
-	}
-
-	/**
-	 * Get a storage from the storage adapter.
-	 * 
-	 * @param  string  $storage
-	 * @return mixed
-	 */
-	protected function storage($storage)
-	{
-		return $this->storage->get($storage);
-	}
-
-	/**
-	 * Set the storage adapter instance.
-	 * 
-	 * @param  \Dingo\OAuth2\Storage\Adapter  $storage
-	 * @return \Dingo\OAuth2\Laravel\Console\NewCommand
-	 */
-	public function setStorage(Adapter $storage)
-	{
-		$this->storage = $storage;
-
-		return $this;
 	}
 
 }

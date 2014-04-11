@@ -1,6 +1,6 @@
 <?php namespace Dingo\OAuth2\Laravel\Console;
 
-use Dingo\OAuth2\Laravel\TableBuilder;
+use Symfony\Component\Console\Input\InputOption;
 
 class InstallCommand extends Command {
 
@@ -19,24 +19,13 @@ class InstallCommand extends Command {
 	protected $description = 'Run the OAuth 2.0 installer';
 
 	/**
-	 * Table builder instance.
-	 * 
-	 * @var \Dingo\OAuth2\Laravel\TableBuilder
-	 */
-	protected $builder;
-
-	/**
 	 * Fire the install command.
 	 * 
 	 * @return void
 	 */
 	public function fire()
 	{
-		$connection = $this->getConnection();
-
-		$this->blankLine();
-
-		$this->builder->on($connection)->up($this);
+		$this->builder->on($this->getConnection())->up($this);
 
 		$this->blankLine();
 
@@ -44,16 +33,15 @@ class InstallCommand extends Command {
 	}
 
 	/**
-	 * Set the table builder instance.
+	 * Get the console command options.
 	 * 
-	 * @param  \Dingo\OAuth2\Laravel\TableBuilder  $builder
-	 * @return \Dingo\OAuth2\Laravel\Console\InstallCommand
+	 * @return array
 	 */
-	public function setTableBuilder(TableBuilder $builder)
+	public function getOptions()
 	{
-		$this->builder = $builder;
-
-		return $this;
+		return [
+			['connection', null, InputOption::VALUE_REQUIRED, 'The database connection to be used by the installer.']
+		];
 	}
 
 }
