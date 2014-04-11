@@ -7,6 +7,8 @@ use Dingo\OAuth2\Server\Authorization;
 use Dingo\OAuth2\Laravel\TableBuilder;
 use Dingo\OAuth2\Storage\FluentAdapter;
 use Illuminate\Support\ServiceProvider;
+use Dingo\OAuth2\Laravel\Console\NewCommand;
+use Dingo\OAuth2\Laravel\Console\DeleteCommand;
 use Dingo\OAuth2\Laravel\Console\InstallCommand;
 use Dingo\OAuth2\Exception\InvalidTokenException;
 use Dingo\OAuth2\Laravel\Console\UninstallCommand;
@@ -179,17 +181,27 @@ class OAuth2ServiceProvider extends ServiceProvider {
 		{
 			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth::tables']);
 
-			return new InstallCommand($builder);
+			return (new InstallCommand)->setTableBuilder($builder);
 		});
 
 		$this->app['dingo.oauth.command.uninstall'] = $this->app->share(function($app)
 		{
 			$builder = new TableBuilder($app['db']->getSchemaBuilder(), $app['config']['oauth::tables']);
 
-			return new UninstallCommand($builder);
+			return (new UninstallCommand)->setTableBuilder($builder);
 		});
 
-		$this->commands('dingo.oauth.command.install', 'dingo.oauth.command.uninstall');
+		$this->app['dingo.oauth.command.new'] = $this->app->share(function($app)
+		{
+			return (new NewCommand)->setStorage($app['dingo.oauth.storage']);
+		});
+
+		$this->app['dingo.oauth.command.delete'] = $this->app->share(function($app)
+		{
+			return (new DeleteCommand)->setStorage($app['dingo.oauth.storage']);
+		});
+
+		$this->commands('dingo.oauth.command.install', 'dingo.oauth.command.uninstall', 'dingo.oauth.command.new', 'dingo.oauth.command.delete');
 	}
 
 }

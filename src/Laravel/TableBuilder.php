@@ -201,6 +201,7 @@ class TableBuilder {
 			$table->string('id', 40)->primary();
 			$table->string('secret', 40)->index();
 			$table->string('name');
+			$table->boolean('trusted');
 		});
 	}
 

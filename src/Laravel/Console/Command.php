@@ -1,30 +1,9 @@
 <?php namespace Dingo\OAuth2\Laravel\Console;
 
-use Dingo\OAuth2\Laravel\TableBuilder;
 use Symfony\Component\Console\Input\InputOption;
 use Illuminate\Console\Command as IlluminateCommand;
 
 class Command extends IlluminateCommand {
-
-	/**
-	 * Table builder instance.
-	 * 
-	 * @var \Dingo\OAuth2\Laravel\TableBuilder
-	 */
-	protected $builder;
-
-	/**
-	 * Create a new Dingo\OAuth2\Laravel\Console\UninstallCommand instance.
-	 * 
-	 * @param  \Dingo\OAuth2\Laravel\TableBuilder  $builder
-	 * @return void
-	 */
-	public function __construct(TableBuilder $builder)
-	{
-		$this->builder = $builder;
-
-		parent::__construct();
-	}
 
 	/**
 	 * Get the database connection.
@@ -60,6 +39,18 @@ class Command extends IlluminateCommand {
 		return [
 			['connection', null, InputOption::VALUE_REQUIRED, 'The database connection to be used by the installer.']
 		];
+	}
+
+	/**
+	 * Insert a blank line into the output.
+	 * 
+	 * @return \Dingo\OAuth2\Laravel\Console\Command
+	 */
+	public function blankLine()
+	{
+		$this->line('');
+
+		return $this;
 	}
 
 }

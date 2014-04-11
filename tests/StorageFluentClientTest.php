@@ -43,7 +43,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 		$builder->shouldReceive('first')->once()->andReturn((object) [
 			'id' => 'test',
 			'secret' => 'test',
-			'name' => 'test'
+			'name' => 'test',
+			'trusted' => false
 		]);
 
 		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
@@ -57,7 +58,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => null
+			'redirect_uri' => null,
+			'trusted' => false
 		], $client->getAttributes());
 	}
 
@@ -72,7 +74,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 		$builder->shouldReceive('first')->once()->andReturn((object) [
 			'id' => 'test',
 			'secret' => 'test',
-			'name' => 'test'
+			'name' => 'test',
+			'trusted' => false
 		]);
 
 		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
@@ -86,7 +89,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => null
+			'redirect_uri' => null,
+			'trusted' => false
 		], $storage->get('test')->getAttributes());
 	}
 
@@ -101,7 +105,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 		$builder->shouldReceive('first')->once()->andReturn((object) [
 			'id' => 'test',
 			'secret' => 'test',
-			'name' => 'test'
+			'name' => 'test',
+			'trusted' => false
 		]);
 
 		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
@@ -115,7 +120,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => 'test'
+			'redirect_uri' => 'test',
+			'trusted' => false
 		], $client->getAttributes());
 	}
 
@@ -134,7 +140,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'uri' => 'test'
+			'uri' => 'test',
+			'trusted' => false
 		]);
 
 		$client = $storage->get('test', null, 'test');
@@ -143,7 +150,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => 'test'
+			'redirect_uri' => 'test',
+			'trusted' => false
 		], $client->getAttributes());
 	}
 
@@ -159,7 +167,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 		$builder->shouldReceive('first')->once()->andReturn((object) [
 			'id' => 'test',
 			'secret' => 'test',
-			'name' => 'test'
+			'name' => 'test',
+			'trusted' => false
 		]);
 
 		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
@@ -173,7 +182,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => null
+			'redirect_uri' => null,
+			'trusted' => false
 		], $client->getAttributes());
 	}
 
@@ -193,7 +203,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'uri' => 'test'
+			'uri' => 'test',
+			'trusted' => false
 		]);
 		$client = $storage->get('test', 'test', 'test');
 
@@ -201,7 +212,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => 'test'
+			'redirect_uri' => 'test',
+			'trusted' => false
 		], $client->getAttributes());
 	}
 
@@ -214,7 +226,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 		$builder->shouldReceive('insert')->once()->with([
 			'id'     => 'test',
 			'secret' => 'test',
-			'name'   => 'test'
+			'name'   => 'test',
+			'trusted' => false
 		]);
 
 		$this->db->shouldReceive('table')->once()->with('client_endpoints')->andReturn($builder = $this->getBuilderMock());
@@ -230,7 +243,8 @@ class StorageFluentClientTest extends PHPUnit_Framework_TestCase {
 			'id' => 'test',
 			'secret' => 'test',
 			'name' => 'test',
-			'redirect_uri' => 'test'
+			'redirect_uri' => 'test',
+			'trusted' => false
 		], $storage->create('test', 'test', 'test', [['uri' => 'test', 'default' => true]])->getAttributes());
 	}
 

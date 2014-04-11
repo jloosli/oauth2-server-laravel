@@ -1,6 +1,6 @@
 <?php namespace Dingo\OAuth2\Laravel\Console;
 
-class UninstallCommand extends Command {
+class UninstallCommand extends InstallCommand {
 
 	/**
 	 * Command name.
@@ -30,11 +30,11 @@ class UninstallCommand extends Command {
 			return;
 		}
 		
-		$this->line('');
+		$this->blankLine();
 
 		$this->builder->on($connection)->down($this);
 
-		$this->line('');
+		$this->blankLine();
 
 		$this->info('OAuth 2.0 package uninstalled successfully.');
 	}

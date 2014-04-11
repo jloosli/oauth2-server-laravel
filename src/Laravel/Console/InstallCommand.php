@@ -1,5 +1,7 @@
 <?php namespace Dingo\OAuth2\Laravel\Console;
 
+use Dingo\OAuth2\Laravel\TableBuilder;
+
 class InstallCommand extends Command {
 
 	/**
@@ -17,6 +19,13 @@ class InstallCommand extends Command {
 	protected $description = 'Run the OAuth 2.0 installer';
 
 	/**
+	 * Table builder instance.
+	 * 
+	 * @var \Dingo\OAuth2\Laravel\TableBuilder
+	 */
+	protected $builder;
+
+	/**
 	 * Fire the install command.
 	 * 
 	 * @return void
@@ -25,13 +34,26 @@ class InstallCommand extends Command {
 	{
 		$connection = $this->getConnection();
 
-		$this->line('');
+		$this->blankLine();
 
 		$this->builder->on($connection)->up($this);
 
-		$this->line('');
+		$this->blankLine();
 
 		$this->info('OAuth 2.0 package installed successfully.');
+	}
+
+	/**
+	 * Set the table builder instance.
+	 * 
+	 * @param  \Dingo\OAuth2\Laravel\TableBuilder  $builder
+	 * @return \Dingo\OAuth2\Laravel\Console\InstallCommand
+	 */
+	public function setTableBuilder(TableBuilder $builder)
+	{
+		$this->builder = $builder;
+
+		return $this;
 	}
 
 }
