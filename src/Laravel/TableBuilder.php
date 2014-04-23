@@ -248,7 +248,7 @@ class TableBuilder {
 			$table->string('token', 40)->primary();
 			$table->enum('type', ['access', 'refresh'])->default('access');
 			$table->string('client_id', 40);
-			$table->string('user_id');
+			$table->string('user_id')->nullable();
 			$table->dateTime('expires');
 		});
 	}
